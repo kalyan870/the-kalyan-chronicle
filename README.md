@@ -2,6 +2,18 @@
 
 An interactive engineering broadsheet for Saragadam Kalyan: project profiles, architecture and tools, a GitHub/Substack digest, grounded RAG, package analysis, and a developer workbench.
 
+## Live edition
+
+- **GitHub Pages (verified):** [kalyan870.github.io/the-kalyan-chronicle](https://kalyan870.github.io/the-kalyan-chronicle/)
+- **Vercel (verified):** [kalyan-chronicle.vercel.app](https://kalyan-chronicle.vercel.app/)
+- **Repository:** [github.com/kalyan870/the-kalyan-chronicle](https://github.com/kalyan870/the-kalyan-chronicle)
+
+The GitHub Pages site is the verified static edition. Vercel serves the app URL; server features depend on the environment variables described below. Cloudflare Pages, Netlify, and Deno Deploy are documented adapters/targets, but no live production URL is currently recorded for them.
+
+### Live screenshot
+
+![The Kalyan Chronicle live desktop edition](docs/screenshots/chronicle-home.png)
+
 ## Stack
 
 - React 19, TypeScript, Vite, Tailwind CSS, Motion, and a PWA service worker
@@ -34,6 +46,20 @@ flowchart LR
 - `src/server/createApp.ts` owns API routes. `api/index.ts` adapts it for Vercel, `netlify/functions/api.ts` adapts it for Netlify, and `server.ts` runs it locally.
 - Static builds use a base-aware media resolver and a bundled archive. They do not poll API routes that static hosts cannot serve. The GitHub Pages build uses `/the-kalyan-chronicle/` as its base path.
 - Protected writes verify Firebase or Clerk identity on the server. Optional Neon and R2 integrations stay behind that boundary; static portfolios and demos do not gain artificial service dependencies.
+
+### Repository map
+
+| Path | Responsibility |
+| --- | --- |
+| `src/components/` | Newspaper sections, project cards, controls, and responsive presentation |
+| `src/data/` | Typed profile, project, and curated fallback edition data |
+| `src/lib/` and `src/utils/` | Auth client, API clients, safe URL handling, base-aware media, print/export helpers |
+| `src/server/` | Express routes, validation, auth gates, provider integrations, and security middleware |
+| `api/`, `netlify/functions/`, `server.ts` | Vercel, Netlify, and local Express entry points |
+| `public/` | PWA metadata, optimized static images, and offline edition assets |
+| `.github/workflows/` | CI, GitHub Pages publishing, and opt-in provider deploy workflows |
+
+The request path is **browser → React feature/UI → host adapter → Express API → server auth/security → optional data, media, or external service**. Static hosting stops at the bundled frontend and curated edition; it does not pretend server APIs are available.
 
 ### Invariants and side effects
 
@@ -70,15 +96,23 @@ bun run build
 
 ## Hosting
 
+### Verified live URLs
+
+| Provider | URL | Verification |
+| --- | --- | --- |
+| GitHub Pages | [https://kalyan870.github.io/the-kalyan-chronicle/](https://kalyan870.github.io/the-kalyan-chronicle/) | HTTP 200; Pages workflow succeeded for the current published revision. |
+| Vercel | [https://kalyan-chronicle.vercel.app/](https://kalyan-chronicle.vercel.app/) | HTTP 200 on 2026-11-23. |
+
+### Other deployment targets
+
 | Host | Deployment shape | Notes |
 | --- | --- | --- |
-| Vercel | Full app: Vite frontend and Express API via `api/index.ts` | Set server secrets in project settings. |
-| Netlify | Vite frontend and Express API through `netlify/functions/api.ts` | `netlify.toml` maps `/api/*` to the function. |
-| Cloudflare Pages | Static frontend with Pages middleware and R2 configuration | Pages Functions do not run the Express server in this repository; server-only API features need a compatible API origin. |
-| Deno Deploy | Dynamic Express server (`server.ts`) or static frontend | Requires a Deno Deploy account/token and app selection. Deno has announced the service sunset for April 2027. |
-| GitHub Pages | Static Vite/PWA frontend | The workflow publishes the static experience at `/the-kalyan-chronicle/`; server API features need an external API deployment. |
+| Netlify | Vite frontend and Express API through `netlify/functions/api.ts` | Adapter and `netlify.toml` are present; no live site URL has been verified. |
+| Cloudflare Pages | Static frontend with Pages middleware and R2 configuration | Workflow is opt-in; requires `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and `CLOUDFLARE_PAGES_PROJECT`. No live Pages URL has been verified. Pages does not run this Express server, so API routes need a compatible API origin. |
+| Deno Deploy | Dynamic Express server (`server.ts`) or static frontend | Workflow requires provider credentials and app selection; no live URL has been verified. Deno has announced the service sunset for April 2027. |
+| GitHub Pages | Static Vite/PWA frontend | Live link above; server API features need an external API deployment. |
 
-GitHub Actions deploy workflows require provider secrets before they can publish. Deployment success is verified by the provider URL and runtime response; a successful build alone is not a live deployment.
+Provider workflows require secrets before they can publish. A workflow/build passing alone is not treated as a live deployment; the provider URL must respond.
 
 ## Environment variables
 

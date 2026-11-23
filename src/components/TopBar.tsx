@@ -74,7 +74,7 @@ export function TopBar({
 
   return (
     <header className="no-print sticky top-0 z-30 border-b border-[var(--color-rule)] bg-[var(--color-paper)]/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 sm:gap-8 px-4 sm:px-6 py-3">
+      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-3 sm:gap-8 px-4 sm:px-6 py-3">
         <a
           href="#top"
           className="font-display text-base sm:text-xl font-bold tracking-tight text-[var(--color-ink)] whitespace-nowrap shrink-0"
@@ -124,7 +124,7 @@ export function TopBar({
           </a>
         </nav>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex max-w-full flex-wrap items-center justify-end gap-2 sm:flex-nowrap sm:shrink-0">
           <ReaderAuthControl onAuthNotice={setAuthError} />
 
           {onOpenWorkbench && (

@@ -30,12 +30,13 @@ export function Masthead({
       </div>
 
       <div className="broadsheet-double-rule py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
-        <div className="text-center lg:text-left flex-1">
+        <div className="min-w-0 w-full text-center lg:text-left flex-1">
           <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-press-red)] font-medium mb-2">
             Special Personal Edition · AI Engineering &amp; Full-Stack Systems
           </p>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.75rem] font-extrabold tracking-tight text-[var(--color-ink)] leading-[1.04]">
-            THE KALYAN CHRONICLE
+          <h1 className="font-display w-full max-w-full whitespace-normal text-[clamp(1.35rem,6vw,3rem)] lg:text-[3.75rem] font-extrabold tracking-tight text-[var(--color-ink)] leading-[1.04]">
+            <span className="block lg:inline">THE KALYAN</span>{' '}
+            <span className="block lg:inline lg:ml-3">CHRONICLE</span>
           </h1>
           <p className="mt-2.5 text-sm sm:text-base text-[var(--color-ink-muted)] max-w-2xl mx-auto lg:mx-0 italic">
             A Broadsheet Dossier on Saragadam Kalyan — Portfolio, LinkedIn, Highlighted Projects, Verified Certificates &amp; Full-Stack Execution
