@@ -37,6 +37,7 @@ interface DailyDigestSectionProps {
   loading: boolean;
   error: string | null;
   onRefresh: () => void;
+  liveSyncEnabled?: boolean;
 }
 
 export function DailyDigestSection({
@@ -44,6 +45,7 @@ export function DailyDigestSection({
   loading,
   error,
   onRefresh,
+  liveSyncEnabled = true,
 }: DailyDigestSectionProps) {
   const commits = digest?.commits ?? [];
   const posts = digest?.substackPosts ?? [];
@@ -67,16 +69,17 @@ export function DailyDigestSection({
               ? `GitHub: ${digest.githubSource === 'live' ? 'Live API' : 'Archive'} · Substack: ${
                   digest.substackSource === 'live' ? 'Live RSS' : 'Archive'
                 }`
-              : 'Connecting feeds'}
+            : 'Archive'}
           </span>
           <button
             type="button"
             onClick={onRefresh}
-            disabled={loading}
+            disabled={loading || !liveSyncEnabled}
+            title={liveSyncEnabled ? 'Refresh live GitHub and Substack feeds' : 'Live sync is unavailable on static hosting'}
             className="inline-flex items-center gap-2 border border-[var(--color-rule-strong)] bg-[var(--color-paper-surface)] px-3.5 py-2 text-xs font-medium text-[var(--color-ink)] hover:bg-[var(--color-paper-alt)] disabled:opacity-60 transition-colors cursor-pointer whitespace-nowrap"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
-            <span>{loading ? 'Syncing Feeds…' : 'Sync Live Wire'}</span>
+            <span>{loading ? 'Syncing Feeds…' : liveSyncEnabled ? 'Sync Live Wire' : 'Archive Snapshot'}</span>
           </button>
         </div>
       </div>
@@ -210,7 +213,7 @@ export function DailyDigestSection({
 
           <figure>
             <NewspaperImage
-              src="/assets/aistudio/file_0000000030988246b127bb6b496cb00f_4f2dde0c.png"
+              src="/assets/aistudio/file_0000000030988246b127bb6b496cb00f_4f2dde0c.webp"
               alt="Saragadam Kalyan reviewing the Environmental Risk and Safety Dashboard on laptop"
               aspectClass="aspect-[4/4]"
               imgClassName="object-cover object-top"

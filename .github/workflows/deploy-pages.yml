@@ -24,6 +24,7 @@ jobs:
       - run: bun run build
         env:
           GITHUB_PAGES: 'true'
+          VITE_STATIC_ONLY: 'true'
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

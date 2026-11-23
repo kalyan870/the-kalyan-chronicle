@@ -11,6 +11,7 @@ import { BroadsheetQrCode, buildSectionQrUrl } from './BroadsheetQrCode';
 import { NewspaperImage } from './NewspaperImage';
 import { validateSubscriberEmail } from '../utils/emailValidation';
 import { toSafeExternalHref } from '../utils/safeUrl';
+import { publicAssetUrl } from '../utils/publicAssetUrl';
 
 interface ClassifiedsAndColophonProps {
   scanDossierUrl: string;
@@ -310,7 +311,7 @@ export function ClassifiedsAndColophon({
 
           <figure>
             <NewspaperImage
-              src="/assets/aistudio/file_00000000aa788207b7097a5b0df6eaeb_cc569b19.png"
+              src="/assets/aistudio/file_00000000aa788207b7097a5b0df6eaeb_cc569b19.webp"
               alt="Saragadam Kalyan Creator Journey from Vignan B.Tech CSE to GenAI, AI Agents, RAG, and LLM Applications for 2028"
               aspectClass="aspect-[4/4]"
               imgClassName="object-cover object-top"
@@ -460,7 +461,7 @@ export function ClassifiedsAndColophon({
         <footer className="lg:col-span-5 space-y-5 print-avoid-break">
           <figure>
             <NewspaperImage
-              src="/assets/aistudio/file_0000000014488211bc6f30b8fdbf6bda_e26db9b0.png"
+              src="/assets/aistudio/file_0000000014488211bc6f30b8fdbf6bda_e26db9b0.webp"
               alt="Portrait of Saragadam Kalyan, AI Engineer and Full-Stack Developer"
               aspectClass="aspect-[4/4]"
               imgClassName="object-cover object-top"
@@ -533,7 +534,7 @@ export function ClassifiedsAndColophon({
                   />
                 )}
                 <img
-                  src="/assets/aistudio/1794827712607_4847db64.png"
+                  src={publicAssetUrl('/assets/aistudio/1794827712607_4847db64.webp')}
                   alt="Kalyan With AI brand seal"
                   loading="lazy"
                   decoding="async"

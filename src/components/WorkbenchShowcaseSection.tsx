@@ -7,6 +7,7 @@ import {
   Radio,
   Terminal,
 } from 'lucide-react';
+import { IS_STATIC_ONLY_BUILD } from '../utils/publicAssetUrl';
 
 export type WorkbenchSectionTab = 'trace' | 'eval' | 'local-code' | 'protocol';
 
@@ -75,6 +76,7 @@ export function WorkbenchShowcaseSection({ onOpenTool }: WorkbenchShowcaseSectio
   const [readiness, setReadiness] = useState<{ status: string; runs: number } | null>(null);
 
   useEffect(() => {
+    if (IS_STATIC_ONLY_BUILD) return;
     let mounted = true;
     fetch('/healthz/ready')
       .then((res) => (res.ok ? res.json() : null))
@@ -110,7 +112,7 @@ export function WorkbenchShowcaseSection({ onOpenTool }: WorkbenchShowcaseSectio
         <div className="flex items-center gap-2 font-mono text-xs border border-[var(--color-rule)] bg-[var(--color-paper-surface)] px-3 py-1.5">
           <Radio className="h-3.5 w-3.5 text-emerald-700" aria-hidden="true" />
           <span>
-            Press Gateway: <strong>{readiness?.status || 'READY'}</strong>
+            Press Gateway: <strong>{readiness?.status || (IS_STATIC_ONLY_BUILD ? 'STATIC · API OFF' : 'CHECKING')}</strong>
             {readiness ? ` · ${readiness.runs} synced runs` : ''}
           </span>
         </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Archive, ExternalLink, QrCode, RotateCcw, X } from 'lucide-react';
 import { TopBar } from './components/TopBar';
 import { Masthead } from './components/Masthead';
@@ -8,14 +8,20 @@ import { WorkflowShiftSection } from './components/WorkflowShiftSection';
 import { PackageAuditSection } from './components/PackageAuditSection';
 import { ClassifiedsAndColophon } from './components/ClassifiedsAndColophon';
 import { OfflineIndicator } from './components/OfflineIndicator';
-import { PrintPreviewModal } from './components/PrintPreviewModal';
-import { EditionArchiveModal } from './components/EditionArchiveModal';
-import { DevWorkbenchModal } from './components/DevWorkbenchModal';
+const PrintPreviewModal = lazy(() =>
+  import('./components/PrintPreviewModal').then((module) => ({ default: module.PrintPreviewModal }))
+);
+const EditionArchiveModal = lazy(() =>
+  import('./components/EditionArchiveModal').then((module) => ({ default: module.EditionArchiveModal }))
+);
+const DevWorkbenchModal = lazy(() =>
+  import('./components/DevWorkbenchModal').then((module) => ({ default: module.DevWorkbenchModal }))
+);
 import {
   WorkbenchShowcaseSection,
   type WorkbenchSectionTab,
 } from './components/WorkbenchShowcaseSection';
-import { printBroadsheet, type BroadsheetPaperSize } from './utils/printBroadsheet';
+import type { BroadsheetPaperSize } from './utils/printBroadsheet';
 import { runViewTransition } from './utils/viewTransition';
 import { registerChronicleWebMcpTools } from './lib/webMcp';
 import {
@@ -23,6 +29,8 @@ import {
   KALYAN_PROFILE,
   VERIFIED_CERTIFICATES,
 } from './data/chronicleData';
+import { STATIC_DIGEST } from './data/staticDigest';
+import { IS_STATIC_ONLY_BUILD } from './utils/publicAssetUrl';
 
 const DIGEST_CACHE_KEY = 'kalyan_chronicle_latest_edition_v1';
 
@@ -37,8 +45,8 @@ function readCachedDigest(): DigestState | null {
 }
 
 export default function App() {
-  const [digest, setDigest] = useState<DigestState | null>(() => readCachedDigest());
-  const [digestLoading, setDigestLoading] = useState<boolean>(true);
+  const [digest, setDigest] = useState<DigestState | null>(() => readCachedDigest() ?? STATIC_DIGEST);
+  const [digestLoading, setDigestLoading] = useState<boolean>(false);
   const [digestError, setDigestError] = useState<string | null>(null);
 
   const [exportingPdf, setExportingPdf] = useState<boolean>(false);
@@ -55,7 +63,12 @@ export default function App() {
   }, []);
 
   const loadDigest = useCallback(async (forceRefresh = false) => {
-    setDigestLoading(true);
+    if (IS_STATIC_ONLY_BUILD) {
+      setDigest(STATIC_DIGEST);
+      setDigestLoading(false);
+      return;
+    }
+    setDigestLoading(forceRefresh);
     setDigestError(null);
     setArchivedEditionTitle(null);
     try {
@@ -77,6 +90,7 @@ export default function App() {
         setDigest(cached);
         setDigestError('Offline or unreachable network — displaying latest cached broadsheet edition');
       } else {
+        setDigest(STATIC_DIGEST);
         setDigestError('Live GitHub or Substack feeds could not be reached');
       }
     } finally {
@@ -85,7 +99,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    void loadDigest(false);
+    if (!IS_STATIC_ONLY_BUILD) void loadDigest(false);
   }, [loadDigest]);
 
   const editionDate = new Date().toLocaleDateString('en-US', {
@@ -141,6 +155,7 @@ export default function App() {
     setPdfMessage(null);
     await new Promise<void>((resolve) => setTimeout(resolve, 80));
 
+    const { printBroadsheet } = await import('./utils/printBroadsheet');
     const result = await printBroadsheet({ paperSize });
     if (result.method === 'blocked') {
       setPdfMessage('Browser print dialog is restricted in embedded preview — generating print-ready PDF…');
@@ -304,6 +319,7 @@ export default function App() {
           loading={digestLoading}
           error={digestError}
           onRefresh={() => void loadDigest(true)}
+          liveSyncEnabled={!IS_STATIC_ONLY_BUILD}
         />
         <WorkflowShiftSection />
         <PackageAuditSection />
@@ -321,7 +337,7 @@ export default function App() {
           latestProjects={digest?.latestProjects}
         />
       </main>
-      <PrintPreviewModal
+      {printPreviewOpen && <Suspense fallback={null}><PrintPreviewModal
         open={printPreviewOpen}
         broadsheetElement={broadsheetRef.current}
         onClose={() => setPrintPreviewOpen(false)}
@@ -331,8 +347,8 @@ export default function App() {
           await handleDownloadPdf(paperSize, paperStock);
         }}
         printing={printing || exportingPdf}
-      />
-      <EditionArchiveModal
+      /></Suspense>}
+      {archiveModalOpen && <Suspense fallback={null}><EditionArchiveModal
         open={archiveModalOpen}
         onClose={() => runViewTransition(() => setArchiveModalOpen(false))}
         onLoadSnapshot={(snapshotDigest, editionTitle) => {
@@ -343,12 +359,12 @@ export default function App() {
             setPdfMessage(`Viewing archived issue: ${editionTitle}`);
           });
         }}
-      />
-      <DevWorkbenchModal
+      /></Suspense>}
+      {workbenchModalOpen && <Suspense fallback={null}><DevWorkbenchModal
         open={workbenchModalOpen}
         initialTab={workbenchTab}
         onClose={() => runViewTransition(() => setWorkbenchModalOpen(false))}
-      />
+      /></Suspense>}
       <OfflineIndicator />
     </div>
   );

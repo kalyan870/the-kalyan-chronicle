@@ -7,6 +7,7 @@ import {
 } from '../data/chronicleData';
 import { SectionQRCode } from './SectionQRCode';
 import { NewspaperImage } from './NewspaperImage';
+import { IS_STATIC_ONLY_BUILD } from '../utils/publicAssetUrl';
 
 type CategoryFilter =
   | 'All'
@@ -17,12 +18,16 @@ type CategoryFilter =
 export function PackageAuditSection() {
   const [rawJson, setRawJson] = useState<string>(DEFAULT_USER_PACKAGE_JSON);
   const [report, setReport] = useState<PackageAuditReport | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<CategoryFilter>('All');
   const [showEditor, setShowEditor] = useState<boolean>(false);
 
   async function runAudit(jsonPayload: string) {
+    if (IS_STATIC_ONLY_BUILD) {
+      setError('Package analysis needs the hosted API. Open this tool on the Vercel or Netlify deployment.');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -45,7 +50,7 @@ export function PackageAuditSection() {
   }
 
   useEffect(() => {
-    void runAudit(DEFAULT_USER_PACKAGE_JSON);
+    if (!IS_STATIC_ONLY_BUILD) void runAudit(DEFAULT_USER_PACKAGE_JSON);
   }, []);
 
   const visibleFindings: PackageFinding[] =
@@ -231,7 +236,7 @@ export function PackageAuditSection() {
           <aside className="lg:col-span-4 space-y-5 print-avoid-break">
             <figure>
               <NewspaperImage
-                src="/assets/aistudio/file_00000000c35c82119e4ed7d746fe44ea_eafefffb.png"
+                src="/assets/aistudio/file_00000000c35c82119e4ed7d746fe44ea_eafefffb.webp"
                 alt="Saragadam Kalyan beside the metallic K monogram and AI engineering monitor"
                 aspectClass="aspect-[4/4]"
                 imgClassName="object-cover object-top"

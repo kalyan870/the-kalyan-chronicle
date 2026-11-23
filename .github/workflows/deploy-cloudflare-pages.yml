@@ -11,6 +11,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: bun run build
+        env:
+          VITE_STATIC_ONLY: 'true'
       - name: Deploy Pages build
         run: npx wrangler pages deploy dist --project-name "$CLOUDFLARE_PAGES_PROJECT"
         env:

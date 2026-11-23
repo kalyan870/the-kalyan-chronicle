@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { ENGINEERING_DESKS, KALYAN_PROFILE } from '../data/chronicleData';
 import { BroadsheetQrCode, buildSectionQrUrl } from './BroadsheetQrCode';
 import { NewspaperImage } from './NewspaperImage';
-import { ChronicleAskBar } from './ChronicleAskBar';
+import { IS_STATIC_ONLY_BUILD } from '../utils/publicAssetUrl';
+
+const ChronicleAskBar = lazy(() => import('./ChronicleAskBar').then((module) => ({ default: module.ChronicleAskBar })));
 
 export function FrontPageSection() {
   const [selectedDeskIndex, setSelectedDeskIndex] = useState<string>(ENGINEERING_DESKS[0].index);
@@ -49,9 +51,10 @@ export function FrontPageSection() {
 
           <figure className="mt-5 mb-6">
             <NewspaperImage
-              src="/assets/aistudio/file_00000000b0ac8211a6c5a0111e97fa8d_9011c4bb.png"
+              src="/assets/aistudio/file_00000000b0ac8211a6c5a0111e97fa8d_9011c4bb.webp"
               alt="Saragadam Kalyan at desk with AI, Python, Docker, and GitHub stickers on laptop beside Artificial Intelligence and System Design volumes"
               aspectClass="aspect-[3/2]"
+              priority
               imgClassName="object-cover object-top bg-white"
               caption="Fig. 1 — Saragadam Kalyan at the engineering desk: uniting AI, Python, Docker, and System Design into reproducible full-stack products."
             />
@@ -77,7 +80,15 @@ export function FrontPageSection() {
             </div>
           </div>
 
-          <ChronicleAskBar />
+          {IS_STATIC_ONLY_BUILD ? (
+            <div className="border border-[var(--color-rule)] bg-[var(--color-paper-surface)] p-4 text-sm text-[var(--color-ink-muted)]">
+              Reader chat is available on the full-stack edition. This GitHub Pages archive keeps the complete project digest available without waiting for API services.
+            </div>
+          ) : (
+            <Suspense fallback={<div aria-hidden="true" className="min-h-16" />}>
+              <ChronicleAskBar />
+            </Suspense>
+          )}
         </article>
 
         <aside className="lg:col-span-4 space-y-5">

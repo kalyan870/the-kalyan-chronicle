@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FileImage } from 'lucide-react';
+import { publicAssetUrl } from '../utils/publicAssetUrl';
 
 interface NewspaperImageProps {
   src: string;
@@ -7,6 +8,7 @@ interface NewspaperImageProps {
   caption: string;
   aspectClass?: string;
   imgClassName?: string;
+  priority?: boolean;
 }
 
 export function NewspaperImage({
@@ -15,10 +17,12 @@ export function NewspaperImage({
   caption,
   aspectClass = 'aspect-[4/3]',
   imgClassName = 'object-cover object-center',
+  priority = false,
 }: NewspaperImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const resolvedSrc = publicAssetUrl(src);
 
   useEffect(() => {
     setLoaded(false);
@@ -32,7 +36,7 @@ export function NewspaperImage({
         setLoaded(true);
       }
     }
-  }, [src]);
+  }, [resolvedSrc]);
 
   return (
     <div className="space-y-2 print-avoid-break">
@@ -64,9 +68,10 @@ export function NewspaperImage({
         {!failed ? (
           <img
             ref={imgRef}
-            src={src}
+            src={resolvedSrc}
             alt={alt}
-            loading="lazy"
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : 'auto'}
             decoding="async"
             referrerPolicy="no-referrer"
             onLoad={() => setLoaded(true)}

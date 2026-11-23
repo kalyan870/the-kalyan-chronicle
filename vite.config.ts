@@ -65,6 +65,17 @@ export default defineConfig(() => {
             'pwa-*.png',
             'apple-touch-icon.png',
           ],
+          // Keep rarely used export, editor, and reader code out of the
+          // install-time precache. These chunks are fetched on demand.
+          globIgnores: [
+            '**/exportBroadsheetPdf-*.js',
+            '**/html2canvas-*.js',
+            '**/index.es-*.js',
+            '**/PrintPreviewModal-*.js',
+            '**/EditionArchiveModal-*.js',
+            '**/DevWorkbenchModal-*.js',
+            '**/ChronicleAskBar-*.js',
+          ],
           navigateFallback: `${base}index.html`,
           navigateFallbackDenylist: [
             /^\/api\//,

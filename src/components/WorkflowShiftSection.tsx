@@ -265,7 +265,7 @@ export function WorkflowShiftSection() {
         <aside className="lg:col-span-4 space-y-4">
           <figure>
             <NewspaperImage
-              src="/assets/aistudio/file_00000000288082118b7035a193174736_ff86bac7.png"
+              src="/assets/aistudio/file_00000000288082118b7035a193174736_ff86bac7.webp"
               alt="One project, five skills, build as you learn graphic featuring Saragadam Kalyan"
               aspectClass="aspect-[3/4]"
               imgClassName="object-contain bg-white"
