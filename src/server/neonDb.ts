@@ -2,12 +2,10 @@ import crypto from 'crypto';
 import { neon } from '@neondatabase/serverless';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import type { SavedEditionRecord } from '../data/chronicleData.ts';
+import { projectRoot } from './runtimePaths.ts';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const LOCAL_ARCHIVE_DIR = path.resolve(__dirname, '../../.local-r2-archive');
+const LOCAL_ARCHIVE_DIR = path.resolve(projectRoot, '.local-r2-archive');
 const LOCAL_RELATIONAL_FILE = path.join(LOCAL_ARCHIVE_DIR, 'relational-store.json');
 
 export interface MediaAssetRecord {

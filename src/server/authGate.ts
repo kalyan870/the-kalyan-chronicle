@@ -1,12 +1,9 @@
 import crypto, { X509Certificate } from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import type { NextFunction, Request, Response } from 'express';
 import { getAuth } from '@clerk/express';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { projectRoot } from './runtimePaths.ts';
 
 export type AuthProviderName =
   | 'clerk'
@@ -42,7 +39,7 @@ function readBundledFirebaseProjectId(): string {
     return process.env.FIREBASE_PROJECT_ID.trim();
   }
   try {
-    const cfgPath = path.resolve(__dirname, '../../firebase-applet-config.json');
+    const cfgPath = path.resolve(projectRoot, 'firebase-applet-config.json');
     if (fs.existsSync(cfgPath)) {
       const parsed = JSON.parse(fs.readFileSync(cfgPath, 'utf-8')) as { projectId?: string };
       return parsed.projectId?.trim() || '';
@@ -486,13 +483,15 @@ export async function verifyUnifiedWriteAuth(
   }
 
   // 4. Enforce fail-closed if any strict provider gate is active or in production deployment
+  const localPreviewWrites =
+    process.env.NODE_ENV === 'development' && process.env.ALLOW_PUBLIC_PREVIEW_WRITES !== 'false';
   const mustRequireAuth =
     isClerkEnabled() ||
     isCloudflareAccessConfigured() ||
     process.env.FIREBASE_AUTH_REQUIRED === 'true' ||
-    (process.env.NODE_ENV === 'production' &&
-      isFirebaseAuthConfigured() &&
-      process.env.ALLOW_PUBLIC_PREVIEW_WRITES !== 'true');
+    process.env.RUNTIME_DEPLOYMENT === 'netlify' ||
+    !localPreviewWrites ||
+    (process.env.NODE_ENV === 'production' && isFirebaseAuthConfigured());
 
   if (mustRequireAuth) {
     return {

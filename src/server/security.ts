@@ -129,7 +129,7 @@ export function enforceSameOriginMutations(req: Request, res: Response, next: Ne
 export const apiGeneralLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 120,
-  standardHeaders: 'draft-8',
+  standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests from this IP. Please retry in a few minutes.' },
 });
@@ -137,7 +137,7 @@ export const apiGeneralLimiter = rateLimit({
 export const apiMutationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 30,
-  standardHeaders: 'draft-8',
+  standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Rate limit exceeded for write/email/upload operations. Please wait shortly.' },
 });
@@ -145,7 +145,7 @@ export const apiMutationLimiter = rateLimit({
 export const aiInferenceLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: process.env.NODE_ENV === 'production' ? 40 : 120,
-  standardHeaders: 'draft-8',
+  standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'AI query rate limit reached. Please retry in a few minutes.' },
 });
@@ -153,7 +153,7 @@ export const aiInferenceLimiter = rateLimit({
 export const subscribeStrictLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
-  standardHeaders: 'draft-8',
+  standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Subscription rate limit reached. Please retry in a few minutes.' },
 });

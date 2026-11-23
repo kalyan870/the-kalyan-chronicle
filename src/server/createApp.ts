@@ -2,7 +2,6 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import {
   S3Client,
@@ -96,10 +95,9 @@ import {
 import { buildAgentCard, handleA2aRpcRequest } from './a2aGateway.ts';
 import { getMcpServerDescriptor, handleMcpJsonRpc } from './mcpServer.ts';
 import { auditAgentTrace, runRagEvalMatrix } from './workbenchEngines.ts';
+import { projectRoot } from './runtimePaths.ts';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const LOCAL_ARCHIVE_DIR = path.resolve(__dirname, '../../.local-r2-archive');
+const LOCAL_ARCHIVE_DIR = path.resolve(projectRoot, '.local-r2-archive');
 
 export interface RepoSummary {
   name: string;
@@ -691,7 +689,7 @@ async function executeDailyAutomationPipeline(options: {
 
   let packageFindingsCount = 0;
   try {
-    const rootPkgPath = path.resolve(__dirname, '../../package.json');
+    const rootPkgPath = path.resolve(projectRoot, 'package.json');
     if (fs.existsSync(rootPkgPath)) {
       const pkgReport = analyzePackageManifest(fs.readFileSync(rootPkgPath, 'utf-8'));
       packageFindingsCount = pkgReport.findings.length;
