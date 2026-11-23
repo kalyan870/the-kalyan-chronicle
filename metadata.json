@@ -1,0 +1,6 @@
+{
+  "name": "The Kalyan Chronicle — Engineering Broadsheet",
+  "description": "Personalized printable broadsheet newspaper and daily workflow digest for Saragadam Kalyan, AI Engineer and Full-Stack Developer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

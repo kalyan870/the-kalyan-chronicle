@@ -1,0 +1,22 @@
+name: Deploy dynamic app to Deno Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Deploy Chronicle server
+        run: deno deploy --json --non-interactive --org "$DENO_DEPLOY_ORG" --app "$DENO_DEPLOY_APP" --prod --entrypoint server.ts
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+          DENO_DEPLOY_ORG: ${{ vars.DENO_DEPLOY_ORG }}
+          DENO_DEPLOY_APP: ${{ vars.DENO_DEPLOY_APP }}

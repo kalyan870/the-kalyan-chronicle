@@ -1,0 +1,112 @@
+{
+  "entities": {
+    "ReaderProfile": {
+      "title": "ReaderProfile",
+      "description": "Publicly isolated reader profile record scoped strictly to its verified Firebase owner.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name shown for reader bookmarks.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        }
+      },
+      "required": ["userId", "displayName", "createdAt"]
+    },
+    "ReaderSession": {
+      "title": "ReaderSession",
+      "description": "Persistent reading & lookup session owned by a verified user.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "archived"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["ownerId", "title", "status", "createdAt", "updatedAt"]
+    },
+    "ReaderMemory": {
+      "title": "ReaderMemory",
+      "description": "Individual retrieval-augmented conversation memory turn bound to an active session.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant"]
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "citations": {
+          "type": "array",
+          "description": "Up to 6 verified broadsheet source identifiers."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["ownerId", "sessionId", "role", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/readers/{userId}": {
+      "schema": { "$ref": "#/entities/ReaderProfile" },
+      "description": "Owner-isolated reader profile document."
+    },
+    "/readers/{userId}/sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/ReaderSession" },
+      "description": "Owner-isolated edition lookup sessions."
+    },
+    "/readers/{userId}/sessions/{sessionId}/memories/{memoryId}": {
+      "schema": { "$ref": "#/entities/ReaderMemory" },
+      "description": "Contextual turn memory documents gated by parent session existence and ownership."
+    }
+  }
+}

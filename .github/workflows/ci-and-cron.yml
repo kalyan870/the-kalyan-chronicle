@@ -1,0 +1,62 @@
+name: Kalyan Chronicle CI & Daily Press Automation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Daily 07:00 UTC automated GitHub -> Substack -> Neon/R2 -> Resend press run
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+    inputs:
+      send_newsletter:
+        description: 'Dispatch Resend morning broadsheet email during manual press run'
+        required: false
+        default: 'true'
+
+jobs:
+  ci-verify:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck & Lint
+        run: bun run lint
+
+      - name: Unit and security regression tests
+        run: bun run test
+
+      - name: Build production bundle
+        run: bun run build
+
+      - name: Audit production dependencies
+        run: bun audit --production --audit-level=high
+
+  daily-press-run:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Daily Kalyan Chronicle Press Pipeline
+        env:
+          CHRONICLE_APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SEND_EMAIL: ${{ inputs.send_newsletter || 'true' }}
+        run: |
+          if [ -z "$CHRONICLE_APP_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "Set APP_URL and CRON_SECRET repository secrets to trigger remote press automation."
+            exit 0
+          fi
+          curl --fail --show-error --silent \
+            -X POST "${CHRONICLE_APP_URL%/}/api/cron/daily-edition" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "{\"triggerSource\":\"github-actions\",\"sendNewsletter\":${SEND_EMAIL}}"

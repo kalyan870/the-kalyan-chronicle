@@ -1,0 +1,11 @@
+name = "the-kalyan-chronicle"
+compatibility_date = "2026-11-01"
+pages_build_output_dir = "dist"
+
+[[r2_buckets]]
+  binding = "CHRONICLE_R2"
+  bucket_name = "kalyan-chronicle-editions"
+
+# Scheduled Cron Trigger for daily 07:00 UTC press dispatch (Workers / Cron integration)
+[triggers]
+  crons = ["0 7 * * *"]

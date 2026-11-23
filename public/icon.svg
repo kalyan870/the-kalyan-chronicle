@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="The Kalyan Chronicle monogram">
+  <rect width="512" height="512" fill="#f7f3ea" />
+  <rect x="28" y="28" width="456" height="456" fill="none" stroke="#161513" stroke-width="14" />
+  <rect x="46" y="46" width="420" height="420" fill="none" stroke="#161513" stroke-width="4" />
+  <rect x="46" y="46" width="420" height="58" fill="#8b261d" />
+  <text x="256" y="84" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="28" font-weight="700" letter-spacing="6" fill="#fcf9f5">THE CHRONICLE</text>
+  <text x="256" y="318" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="210" font-weight="800" fill="#161513">KC</text>
+  <line x1="88" y1="364" x2="424" y2="364" stroke="#161513" stroke-width="6" />
+  <text x="256" y="408" text-anchor="middle" font-family="monospace" font-size="26" font-weight="600" letter-spacing="4" fill="#8b261d">KALYAN · EDITION</text>
+</svg>
