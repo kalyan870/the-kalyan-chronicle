@@ -483,8 +483,15 @@ export async function verifyUnifiedWriteAuth(
   }
 
   // 4. Enforce fail-closed if any strict provider gate is active or in production deployment
-  const localPreviewWrites =
-    process.env.NODE_ENV === 'development' && process.env.ALLOW_PUBLIC_PREVIEW_WRITES !== 'false';
+  const hostedRuntime =
+    process.env.RUNTIME_DEPLOYMENT === 'netlify' ||
+    process.env.NETLIFY === 'true' ||
+    process.env.CONTEXT === 'production' ||
+    Boolean(process.env.DEPLOY_URL) ||
+    process.env.VERCEL === '1' ||
+    Boolean(process.env.DENO_DEPLOYMENT_ID) ||
+    process.env.CF_PAGES === '1';
+  const localPreviewWrites = process.env.NODE_ENV !== 'production' && !hostedRuntime;
   const mustRequireAuth =
     isClerkEnabled() ||
     isCloudflareAccessConfigured() ||
