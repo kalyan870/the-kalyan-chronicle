@@ -6,13 +6,20 @@ An interactive engineering broadsheet for Saragadam Kalyan: project profiles, ar
 
 - **GitHub Pages (verified):** [kalyan870.github.io/the-kalyan-chronicle](https://kalyan870.github.io/the-kalyan-chronicle/)
 - **Vercel (verified):** [kalyan-chronicle.vercel.app](https://kalyan-chronicle.vercel.app/)
+- **Netlify (verified):** [the-kalyan-chronicle.netlify.app](https://the-kalyan-chronicle.netlify.app/)
 - **Repository:** [github.com/kalyan870/the-kalyan-chronicle](https://github.com/kalyan870/the-kalyan-chronicle)
 
-The GitHub Pages site is the verified static edition. Vercel serves the app URL; server features depend on the environment variables described below. Cloudflare Pages, Netlify, and Deno Deploy are documented adapters/targets, but no live production URL is currently recorded for them.
+GitHub Pages serves the static edition. Vercel and Netlify have server adapters for API routes; server features depend on each host's environment variables.
 
 ### Live screenshot
 
 ![The Kalyan Chronicle live desktop edition](docs/screenshots/chronicle-home.png)
+
+### Portfolio editions
+
+| V1 — side-by-side | V2 — full-screen |
+| --- | --- |
+| [Open V1](https://kalyannexus.vercel.app/) · ![V1 screenshot](docs/screenshots/portfolio-v1.webp) | [Open V2](https://kalyanportfolio-five.vercel.app/) · ![V2 screenshot](docs/screenshots/portfolio-v2.webp) |
 
 ## Stack
 
@@ -100,16 +107,15 @@ bun run build
 
 | Provider | URL | Verification |
 | --- | --- | --- |
-| GitHub Pages | [https://kalyan870.github.io/the-kalyan-chronicle/](https://kalyan870.github.io/the-kalyan-chronicle/) | HTTP 200; Pages workflow succeeded for the current published revision. |
-| Vercel | [https://kalyan-chronicle.vercel.app/](https://kalyan-chronicle.vercel.app/) | HTTP 200 on 2026-11-23. |
+| GitHub Pages | [https://kalyan870.github.io/the-kalyan-chronicle/](https://kalyan870.github.io/the-kalyan-chronicle/) | HTTP 200; publish workflow passed for `77577b2`. |
+| Vercel | [https://kalyan-chronicle.vercel.app/](https://kalyan-chronicle.vercel.app/) | HTTP 200 on 2026-11-24. |
+| Netlify | [https://the-kalyan-chronicle.netlify.app/](https://the-kalyan-chronicle.netlify.app/) | HTTP 200 on 2026-11-24. |
 
 ### Other deployment targets
 
 | Host | Deployment shape | Notes |
 | --- | --- | --- |
-| Netlify | Vite frontend and Express API through `netlify/functions/api.ts` | Adapter and `netlify.toml` are present; no live site URL has been verified. |
-| Cloudflare Pages | Static frontend with Pages middleware and R2 configuration | Workflow is opt-in; requires `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and `CLOUDFLARE_PAGES_PROJECT`. No live Pages URL has been verified. Pages does not run this Express server, so API routes need a compatible API origin. |
-| Deno Deploy | Dynamic Express server (`server.ts`) or static frontend | Workflow requires provider credentials and app selection; no live URL has been verified. Deno has announced the service sunset for April 2027. |
+| Cloudflare Pages | Static frontend | Opt-in workflow requires `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and the `CLOUDFLARE_PAGES_PROJECT` repository variable. No live Pages URL is configured. Pages does not run this Express server, so API routes need a compatible API origin. |
 | GitHub Pages | Static Vite/PWA frontend | Live link above; server API features need an external API deployment. |
 
 Provider workflows require secrets before they can publish. A workflow/build passing alone is not treated as a live deployment; the provider URL must respond.
