@@ -31,6 +31,11 @@ GitHub Pages serves the static edition. Vercel and Netlify have server adapters 
 
 ## Architecture
 
+![the-kalyan-chronicle architecture map](docs/images/the-kalyan-chronicle-architecture.png)
+
+[Architecture notes](docs/architecture.md) · [Editable SVG](docs/images/the-kalyan-chronicle-architecture.svg)
+
+
 ```mermaid
 flowchart LR
   Browser[Visitor browser] --> Vite[React and TypeScript UI]
