@@ -2,6 +2,13 @@
 
 An interactive engineering broadsheet for Saragadam Kalyan: project profiles, architecture and tools, a GitHub/Substack digest, grounded RAG, package analysis, and a developer workbench.
 
+[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-222?logo=github)](https://kalyan870.github.io/the-kalyan-chronicle/)
+[![Vercel](https://img.shields.io/badge/Live-Vercel-000?logo=vercel)](https://kalyan-chronicle.vercel.app/)
+[![Netlify](https://img.shields.io/badge/Live-Netlify-00ad9f?logo=netlify)](https://the-kalyan-chronicle.netlify.app/)
+[![Verify Chronicle](https://github.com/kalyan870/the-kalyan-chronicle/actions/workflows/ci-and-cron.yml/badge.svg)](https://github.com/kalyan870/the-kalyan-chronicle/actions/workflows/ci-and-cron.yml)
+
+**[Read the live Chronicle →](https://kalyan-chronicle.vercel.app/)**
+
 ## Live edition
 
 - **GitHub Pages (verified):** [kalyan870.github.io/the-kalyan-chronicle](https://kalyan870.github.io/the-kalyan-chronicle/)
